@@ -10,7 +10,7 @@ const GRAVITY = 2500;
 const JUMP_FORCE = 950;
 const TERMINAL_VELOCITY = 20
 const MAX_JUMPS = 1
-var DEFAULT_MAX_SHOOT_TIME = 15
+const DEFAULT_MAX_SHOOT_TIME = 10
 
 enum State{IDLE, WALKING, DYING}
 
@@ -36,9 +36,9 @@ var current_anim
 var next_anim
 
 var shoot_time = 0
-
 var can_shoot = true
-
+var weapon_temp = 0
+var weapon_overheated = false
 
 func get_health():
 	return health
@@ -171,13 +171,24 @@ func _fixed_process(delta):
 	#shoot() is here so we can limit it to a fixed interval
 	shoot_time +=1
 	if Input.is_action_pressed("ui_accept"):
-		if shoot_time > DEFAULT_MAX_SHOOT_TIME:
+		if  !weapon_overheated and shoot_time > DEFAULT_MAX_SHOOT_TIME:
+			weapon_temp +=20
 			shoot_time = 0
 			can_shoot=true
 		else:
 			can_shoot = false
 		shoot()
+	
+	if weapon_temp >120:
+		weapon_overheated = true
+	
+	weapon_temp -=1
+	
+	get_node("Label").set_text(str(weapon_temp) +"     " + str(weapon_overheated))
 		
+	if weapon_temp <=0:
+		weapon_temp = 0
+		weapon_overheated = false
 		
 	if current_anim != next_anim:
 		current_anim = next_anim

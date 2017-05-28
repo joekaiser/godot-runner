@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=1]
+[gd_scene load_steps=81 format=1]
 
 [ext_resource path="res://players/player_script.gd" type="Script" id=1]
 [ext_resource path="res://players/joe/Idle/Idle_000.png" type="Texture" id=2]
@@ -76,6 +76,7 @@
 [ext_resource path="res://players/joe/Running/Running_017.png" type="Texture" id=74]
 [ext_resource path="res://players/jump.wav" type="Sample" id=75]
 [ext_resource path="res://players/shoot.wav" type="Sample" id=76]
+[ext_resource path="res://font-48.fnt" type="BitmapFont" id=77]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -175,5 +176,21 @@ default/filter/gain = 1.0
 default/reverb_room = 2
 default/reverb_send = 0.0
 default/chorus_send = 0.0
+
+[node name="Label" type="Label" parent="."]
+
+focus/ignore_mouse = true
+focus/stop_mouse = true
+size_flags/horizontal = 2
+size_flags/vertical = 0
+margin/left = 67.0
+margin/top = -40.0
+margin/right = 247.0
+margin/bottom = 33.0
+custom_fonts/font = ExtResource( 77 )
+text = "100"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
 
 
