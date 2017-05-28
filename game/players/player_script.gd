@@ -10,11 +10,14 @@ const GRAVITY = 2500;
 const JUMP_FORCE = 950;
 const TERMINAL_VELOCITY = 20
 const MAX_JUMPS = 1
+var DEFAULT_MAX_SHOOT_TIME = 15
 
 enum State{IDLE, WALKING, DYING}
 
 onready var sprite = get_node("sprite")
 onready var sfx = get_node("sfx")
+
+var bullet_scene = preload("res://players/bullet.tscn")
 
 var current_state
 var previous_state
@@ -31,6 +34,10 @@ var health = 3 setget set_health,get_health
 
 var current_anim
 var next_anim
+
+var shoot_time = 0
+
+var can_shoot = true
 
 
 func get_health():
@@ -100,8 +107,18 @@ func jump():
 	
 func shoot():
 	next_anim = next_anim+"_firing"
-	if !sfx.is_active():
+	if can_shoot:
 		sfx.play("shoot")
+		var bullet = bullet_scene.instance()
+		var bullet_direction=1.0
+		if sprite.is_flipped_h():
+			bullet_direction = -1.0
+		
+		var bullet_pos = get_pos()+Vector2(40*bullet_direction,5)
+		bullet.set_pos(bullet_pos)
+		get_parent().add_child(bullet)
+		bullet.set_linear_velocity(Vector2(800*bullet_direction,0))
+		PS2D.body_add_collision_exception(bullet.get_rid(), get_rid()) # Make bullet and this not collide
 	
 func _fixed_process(delta):
 		
@@ -152,8 +169,15 @@ func _fixed_process(delta):
 		next_anim = "air"
 		
 	#shoot() is here so we can limit it to a fixed interval
+	shoot_time +=1
 	if Input.is_action_pressed("ui_accept"):
+		if shoot_time > DEFAULT_MAX_SHOOT_TIME:
+			shoot_time = 0
+			can_shoot=true
+		else:
+			can_shoot = false
 		shoot()
+		
 		
 	if current_anim != next_anim:
 		current_anim = next_anim
